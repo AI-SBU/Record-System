@@ -3,6 +3,7 @@
 int main()
 {
     Account account{};
+    int choice{};
     while(true)
     {
         std::cout<<"Select one option below ";
@@ -35,8 +36,7 @@ int main()
                 exit(0);
                 break;
             default:
-                cout<<"\nEnter corret choice";
-                exit(0);
+                std::cout<<"\nEnter correct choice" << std::endl;
         }
     }
 }

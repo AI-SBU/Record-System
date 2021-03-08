@@ -29,6 +29,8 @@ void Account::show_data() {
 /**
  *
  * Reading in user data and  writing it to a file in binary format
+ * creates a Account obj after reading user data
+ * writes the object to the file stream
  */
 void Account::write_record()
 {
@@ -38,11 +40,15 @@ void Account::write_record()
         read_data();
         out_file.write(reinterpret_cast<char *> (this), sizeof(*this));
         out_file.close();
+        records_in_file++;
     } catch (std::exception &e) {
         std::cout << e.what() << std::endl;
     }
 }
 
+/**
+ * reads the record from a file
+ */
 void Account::read_record()
 {
     std::ifstream in_file;
@@ -59,7 +65,7 @@ void Account::read_record()
     }
 }
 
-long long Account::helper_file_size() {
+[[maybe_unused]] long long Account::helper_file_size() {
     std::ifstream file;
     try{
         file.open(filename, std::ios::binary);
@@ -84,9 +90,8 @@ void Account::search_record(int record_num)
 {
     std::ifstream file;
     try{
-        long long records = helper_file_size();
-        std::cout << "Records in file : " << records << std::endl;
-        if(records > record_num) return; //return to caller since the parameter is out of scope with respect to #records
+
+        if(records_in_file > record_num) return; //return to caller since the parameter is out of scope with respect to #records
         file.seekg((record_num-1) * sizeof(*this)); //seeking starting at the end of record_num-1
         file.read(reinterpret_cast<char *> (this), sizeof(*this)); //reading the specific record of size
                                                                          // sizeof(*this) bytes
@@ -98,13 +103,17 @@ void Account::search_record(int record_num)
     }
 }
 
+/**
+ * The parameter specifies which record to be changed
+ * Overrides this record with new data
+ * @param record_num
+ */
 void Account::edit_record(int record_num)
 {
     std::fstream file;
     try{
-        long long records = helper_file_size();
-        std::cout << "Records in file : " << records << std::endl;
-        if(records > record_num) return; //return to caller since the parameter is out of scope with respect to #records
+
+        if(records_in_file > record_num) return; //return to caller since the parameter is out of scope with respect to #records
         file.seekg((record_num-1) * sizeof(*this)); //seeking starting at the end of record_num-1
         file.read(reinterpret_cast<char *> (this), sizeof(*this)); //reading the specific record
         std::cout << "Record to be removed : " << std::endl;
@@ -120,10 +129,16 @@ void Account::edit_record(int record_num)
     }
 }
 
+/**
+ * Deletes a record from the file, the passed parameter specifies which record to remove
+ * Creates a temp where all but the unwanted record gets stored, in-order
+ * deletes the original file and changes the name of the temp file to
+ * the desired name
+ * INEFFICIENT
+ * @param record_num
+ */
 void Account::delete_record(int record_num)
 {
-    long long records = helper_file_size();
-    if(record_num > records) return;
     std::fstream file;
     try{
         file.open(filename, std::ios::in | std::ios::out | std::ios::binary);
@@ -131,7 +146,7 @@ void Account::delete_record(int record_num)
         tmp_file.open("tmp_file.o", std::ios::out | std::ios::binary);
         try{
             file.seekg(0);
-            for(int i = 0; i < records; i++)
+            for(int i = 0; i < records_in_file; i++)
             {
                 file.read(reinterpret_cast<char *> (this), sizeof(*this));
                 if(i == (record_num-1)) continue;
@@ -144,6 +159,7 @@ void Account::delete_record(int record_num)
         file.close();
         remove(filename);
         rename("tmp_file.o", filename);
+        records_in_file--;
     }catch (std::exception &e){
         std::cout << e.what() << std::endl;
     }

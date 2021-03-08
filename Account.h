@@ -13,6 +13,7 @@ private:
     char first_name[20]{};
     char last_name[20]{};
     double balance{};
+    int records_in_file {};
     const char *filename{"record.o"};
 
 public:
@@ -20,7 +21,8 @@ public:
     void show_data();
     void write_record();
     void read_record();
-    long long helper_file_size();
+
+    [[maybe_unused]] long long helper_file_size();
     void search_record(int record_num);
     void edit_record(int record_num);
     void delete_record(int record_num);
