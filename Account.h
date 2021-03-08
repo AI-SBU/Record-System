@@ -20,8 +20,8 @@ public:
     void show_data();
     void write_record();
     void read_record();
-    void search_record();
-    void edit_record();
-    void delete_record();
+    void search_record(int record_num);
+    void edit_record(int record_num);
+    void delete_record(int record_num);
 };
 #endif //BANKINGRECORDSYSTEM_ACCOUNT_H
