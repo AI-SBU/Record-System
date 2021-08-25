@@ -33,6 +33,7 @@ int main()
                 account.delete_record();
                 break;
             case 6:
+                std::cout<<"\nExiting program..." << std::endl;
                 exit(0);
                 break;
             default:

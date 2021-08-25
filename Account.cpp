@@ -130,12 +130,11 @@ void Account::edit_record(int record_num)
 }
 
 /**
- * Deletes a record from the file, the passed parameter specifies which record to remove
+ * Deletes a record from the file,
  * Creates a temp where all but the unwanted record gets stored, in-order
  * deletes the original file and changes the name of the temp file to
  * the desired name
- * INEFFICIENT
- * @param record_num
+ * @param record_num the passed parameter specifies which record to remove
  */
 void Account::delete_record(int record_num)
 {
